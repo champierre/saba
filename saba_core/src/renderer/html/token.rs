@@ -1,0 +1,83 @@
+use alloc::string::String;
+use alloc::vec::Vec;
+use crate::renderer::html::attribute::Attribute;
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct HtmlTokenizer {
+  state: State,
+  pos: usize,
+  reconsume: bool,
+  latest_token: Option<HtmlToken>,
+  input: Vec<char>,
+  buf: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum HtmlToken {
+  StartTag {
+    tag: String,
+    self_closing: bool,
+    attributes: Vec<Attribute>,
+  },
+  EndTag {
+    tag: String,
+  },
+  Char(char),
+  Eof,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum State {
+  Data,
+  TagOpen,
+  EndTagOpen,
+  TagName,
+  BeforeAttributeName,
+  AttributeName,
+  AfterAttributeName,
+  BeforeAttributeValue,
+  AttributeValueDoubleQuoted,
+  AttributeValueSingleQuoted,
+  AttributeValueUnquoted,
+  AfterAttributeValueQuoted,
+  SelfClosingStartTag,
+  ScriptData,
+  ScriptDataLessThanSign,
+  ScriptDataEndTagOpen,
+  ScriptDataEndTagName,
+  TemporaryBuffer,
+}
+
+impl Iterator for HtmlTokenizer {
+  type Item = HtmlToken;
+
+  fn next(&mut self) -> Option<Self::Item> {
+    if self.pos >= self.input.len() {
+      return None;
+    }
+
+    loop {
+      match self.state {
+        State::Data => {}
+        _ => {}
+      }
+    }
+  }
+}
+
+impl HtmlTokenizer {
+  fn is_eof(&self) -> bool {
+    self.pos > self.input.len()
+  }
+
+  pub fn new(html: String) -> String {
+    Self {
+      state: State::Data,
+      pos: 0,
+      reconsume: false,
+      latest_token: None,
+      input: html.chars().collect(),
+      buf: String::new(),
+    }
+  }
+}
